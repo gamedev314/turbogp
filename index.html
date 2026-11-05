@@ -1690,7 +1690,7 @@ function resetRace(){
     jaden=cars.find(c=>c!==pl&&!c.isRemote);
     for(const c of cars)if(c!==pl&&c!==jaden)c.eliminated=true;
     const cs=carInfo(selectedCar);
-    jaden.name='JIMOTHY DONALDSON';jaden.skill=1.03;jaden.vcap=cs.max/3.6*1.048;jaden.accK=cs.acc*1.1;jaden.jb=1;jaden.jbOn=false;
+    jaden.name='JIMOTHY DONALDSON';jaden.skill=1.03;jaden.vcap=cs.max/3.6*1.048;jaden.accK=cs.acc*1.1;jaden.jb=1;jaden.jbOn=false;jaden.chase=false;
     jaden.slot=0;pl.slot=1;
     for(const c of[jaden,pl]){c.dist=S0-12;c.d=c===jaden?-3.2:3.2;c.lane=c.d;c.tl=c.d}
     rank=prevRank=2;
@@ -1970,7 +1970,13 @@ function stepAI(c,dt){
   at(c.dist);
   const J=c===jaden&&duelOn;
   let rb=1;const gap=pl.dist-c.dist;
-  if(J)rb+=clamp((gap-20)/400,0,.08);   // Jimothy Donaldson catches up when you pull ahead, but never slows down when he leads
+  if(J){
+    // Catch-up: whenever you are 2+ seconds ahead he chases until he has taken the lead. In the final stretch the help
+    // fades out completely, so the finish is decided purely by skill.
+    const gT=(pl.dist-c.dist)/Math.max(pl.v,30),f=clamp((.85-pl.dist/RACE_DISTANCE)/.13,0,1);
+    if(gT>2)c.chase=true;else if(gT<-.4||f<=0)c.chase=false;
+    if(c.chase&&state==='race')rb+=f*clamp(.05+Math.max(gT,0)*.05,.05,.16);
+  }
   else if(gap>120)rb+=clamp((gap-120)/3000,0,.05)*CFG.rubber;
   let vt=(J?Math.min(VL[Q.i]*c.skill,c.vcap)*rb:Math.min(VL[Q.i],90)*c.skill*rb),bl=null,bd=1e9;
   if(J){
