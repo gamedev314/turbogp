@@ -42,7 +42,13 @@ small{font-size:10px;font-weight:700;letter-spacing:1px;color:#9aa6c0}
 #df{height:100%;width:0;background:#94a3b8;border-radius:4px}
 #boost span,#drift span{font-size:11px;font-weight:800;color:#cdd6ea;text-shadow:0 1px 4px #000}
 #dbtn{position:absolute;right:14px;bottom:200px;width:80px;height:80px;border-radius:50%;background:rgba(232,32,42,.75);border:3px solid #fff;font-weight:900;font-size:14px;display:none;align-items:center;justify-content:center;pointer-events:auto}
-#pause{position:fixed;inset:0;display:none;align-items:center;justify-content:center;flex-direction:column;background:rgba(0,0,0,.5);font-size:clamp(36px,8vw,80px);font-weight:900;font-style:italic;z-index:4}
+#pause{position:fixed;inset:0;display:none;align-items:center;justify-content:center;flex-direction:column;background:rgba(0,0,0,.5);font-size:clamp(36px,8vw,80px);font-weight:900;font-style:italic;z-index:20}
+#pauseBtns{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:22px;max-width:92vw}
+#pauseBtns button{font:900 clamp(14px,2.2vw,20px) "Arial Black","Trebuchet MS",sans-serif;font-style:normal;letter-spacing:1px;padding:12px 22px;border-radius:12px;border:2px solid #fff;color:#fff;background:#e8202a;box-shadow:0 4px 0 #8f1118;cursor:pointer}
+#pauseBtns button:active{transform:translateY(3px);box-shadow:0 1px 0 #8f1118}
+#pauseBtns #pShop{background:linear-gradient(135deg,#f59e0b,#eab308);box-shadow:0 4px 0 #9a6700}
+#pauseBtns #pTracks{background:#2563eb;box-shadow:0 4px 0 #1e3a8a}
+#pauseBtns #pMenu{background:#475569;box-shadow:0 4px 0 #1e293b}
 #pause small{font-size:clamp(14px,2.5vw,22px);margin-top:10px;font-style:normal}
 .ov{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:radial-gradient(circle at 50% 30%,rgba(20,35,70,.72),rgba(4,6,14,.92));text-align:center;padding:16px;z-index:5;overflow:auto}
 .ov.hide{display:none}
@@ -54,6 +60,9 @@ h1 b{color:#ff2b2b}
 #menu .sub{background:rgba(5,10,20,.72);padding:8px 13px;border-radius:10px;backdrop-filter:blur(5px)}
 .menuButtonPanel{display:flex;flex-direction:column;gap:11px;justify-content:center;align-items:stretch;width:min(470px,91vw);padding:16px;background:linear-gradient(145deg,rgba(12,20,35,.94),rgba(4,8,17,.96));border:2px solid rgba(148,163,184,.48);border-radius:20px;box-shadow:0 12px 34px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.08)}
 .menuButtonPanel button{width:100%;min-width:0;max-width:none;background:#e8202a!important;box-shadow:0 5px 0 #8f1118!important;border-radius:14px}
+.menuButtonPanel #jadenBtn{background:linear-gradient(135deg,#450a0a,#b91c1c 50%,#f97316)!important;box-shadow:0 5px 0 #2a0505,0 0 20px rgba(239,68,68,.6)!important;border:2px solid #fecaca;color:#fff;letter-spacing:2px;text-shadow:0 2px 0 rgba(0,0,0,.5);animation:jadenGlow 1.8s ease-in-out infinite}
+#jadenBtn small{display:block;font-size:.58em;letter-spacing:3px;opacity:.9;margin-top:2px}
+@keyframes jadenGlow{0%,100%{filter:brightness(1)}50%{filter:brightness(1.25)}}
 .menuButtonPanel #friendBtn{background:#f07832!important;box-shadow:0 5px 0 #a84719!important}
 #playBtn,#friendBtn{font-size:clamp(18px,2.8vw,24px);padding:15px 24px}
 .menuUtilityButtons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
@@ -297,7 +306,7 @@ button:disabled{opacity:.4;cursor:default}button:disabled:active{transform:none}
   <button class="mc" id="mcAbility" aria-label="Use car ability">ABILITY</button>
   <button class="mc" id="mcPause" aria-label="Pause race">Ⅱ</button>
 </div>
-<div id="pause">PAUSED<small>Press P to resume</small></div>
+<div id="pause">PAUSED<small>Press P to resume</small><div id="pauseBtns"><button id="pResume" type="button">RESUME</button><button id="pShop" type="button">SHOP</button><button id="pTracks" type="button">TRACK SELECT</button><button id="pMenu" type="button">MAIN MENU</button></div></div>
 
 <canvas id="raceBackdrop"></canvas>
 <canvas id="partyFx"></canvas><div id="toast"></div><div id="tutBox"><div id="tutT"></div><div id="tutX"></div><div id="tutH"></div><button id="tutGo" type="button"></button><button id="tutSkip" type="button">Skip tutorial</button></div><canvas id="introOverlay"></canvas>
@@ -319,6 +328,7 @@ button:disabled{opacity:.4;cursor:default}button:disabled:active{transform:none}
       <div class="toolnote" id="modeDescription">Standard championship race against the full grid.</div>
     </div>
     <div class="menuUtilityButtons"><button id="shopBtn">SHOP</button><button id="garageBtn">GARAGE</button><button id="adminBtn">ADMIN PANEL</button></div>
+    <button id="jadenBtn" type="button">TRY IF YOU DARE<small>1v1 RACE vs JIMOTHY DONALDSON</small></button>
   </div>
   <div class="sub"><kbd>W</kbd>/<kbd>↑</kbd> accelerate · <kbd>A</kbd>/<kbd>D</kbd> steer · <kbd>SPACE</kbd> boost · <kbd>SHIFT</kbd> drift · <kbd>P</kbd> pause · <kbd>C</kbd> camera</div>
 </div>
@@ -619,10 +629,10 @@ sun.castShadow=true;sun.shadow.mapSize.set(LOWMEM?1024:2048,LOWMEM?1024:2048);
 {const s=sun.shadow.camera;s.left=-70;s.right=70;s.top=70;s.bottom=-70;s.near=1;s.far=520}
 sun.shadow.bias=-.0006;sun.shadow.normalBias=.4;
 scene.add(sun,sun.target);
-let qLevel=LOWMEM?1:0,cullR=900,qT=0,qN=0,qCool=4,cullTick=0,cullList=[];
+let qLevel=LOWMEM?1:0,cullR=900,qT=0,qN=0,qCool=4,cullTick=0,cullList=[],qPending=false,shadowEvery=1;
 function applyQuality(){
   renderer.setPixelRatio(basePR*[1,.8,.62][qLevel]);renderer.setSize(innerWidth,innerHeight);
-  sun.castShadow=qLevel<2;cullR=[900,650,420][qLevel];
+  shadowEvery=qLevel>=2?2:1;cullR=[900,650,420][qLevel];
   camera.far=[9000,7000,5000][qLevel];camera.updateProjectionMatrix();
 }
 const hemi=new THREE.HemisphereLight(0xaed0ff,0x6d7f4a,.45);scene.add(hemi);
@@ -778,25 +788,31 @@ function addCircuitRealism(){
   const lightMat=new THREE.MeshStandardMaterial({color:0xffffff,emissive:new THREE.Color(0xfff1cf),emissiveIntensity:3,roughness:.15});
   const postGeo=new THREE.CylinderGeometry(.055,.07,1.0,8);
   const lampGeo=new THREE.SphereGeometry(.12,12,8);
-  // Continuous low black safety rails around both edges of the usable course.
-  for(const side of [-1,1]){
-    for(let k=0;k<N;k+=3){
-      const p=P[k],r=R[k],off=HALF+1.05,x=p.x+r.x*side*off,z=p.z+r.z*side*off;
-      const post=new THREE.Mesh(new THREE.BoxGeometry(.16,.72,.16),darkMetal);post.position.set(x,.48,z);post.rotation.y=Math.atan2(r.x,r.z);world.add(post);
-      if(k%6===0){const next=P[Math.min(k+3,N-1)],nx=next.x+r.x*side*off,nz=next.z+r.z*side*off;const dx=nx-x,dz=nz-z,len=Math.hypot(dx,dz);const bar=new THREE.Mesh(new THREE.BoxGeometry(.13,.16,len+0.08),darkMetal);bar.position.set((x+nx)/2,.72,(z+nz)/2);bar.rotation.y=Math.atan2(dx,dz);world.add(bar);}
+  // One continuous guardrail per side, swept along the whole course as a single mesh (broken only by the jump gap).
+  // Its inner face is exactly where the car physics stop the car (see RAIL_IN in stepPlayer).
+  {
+    const RO=HALF+KERB+.3,TH=.08,Y0=.1,Y1=.95,js=jumpSection(),g1=js.start+js.ramp+js.lip,g2=g1+js.gap;
+    const rp=[],ri=[],bp=[],bi=[];
+    for(const side of[-1,1])for(const[sa,sb]of[[0,g1],[g2,L-.02]]){
+      const n=Math.max(2,Math.ceil((sb-sa)/2)),v0=rp.length/3,w0=bp.length/3;
+      for(let j=0;j<=n;j++){
+        const sM=sa+(sb-sa)*j/n;at(sM);const h=routeHeight(sM);
+        const xi=Q.x+Q.rx*side*(RO-TH),zi=Q.z+Q.rz*side*(RO-TH),xo=Q.x+Q.rx*side*(RO+TH),zo=Q.z+Q.rz*side*(RO+TH);
+        rp.push(xi,h+Y0,zi,xi,h+Y1,zi,xo,h+Y1,zo,xo,h+Y0,zo);
+        const xb=Q.x+Q.rx*side*(RO-TH-.004),zb=Q.z+Q.rz*side*(RO-TH-.004);
+        bp.push(xb,h+.5,zb,xb,h+.66,zb);
+      }
+      for(let j=0;j<n;j++){const p=v0+j*4,q=p+4;for(let e=0;e<4;e++){const e2=(e+1)%4;ri.push(p+e,q+e,p+e2,q+e,q+e2,p+e2)}
+        const bp0=w0+j*2,bq=bp0+2;bi.push(bp0,bq,bp0+1,bq,bq+1,bp0+1)}
+      ri.push(v0,v0+1,v0+2,v0,v0+2,v0+3);const e0=v0+n*4;ri.push(e0,e0+1,e0+2,e0,e0+2,e0+3);
     }
+    const mkG=(p,i)=>{const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(p,3));g.setIndex(i);g.computeVertexNormals();return g};
+    const rm=new THREE.Mesh(mkG(rp,ri),new THREE.MeshStandardMaterial({color:0x2e343d,metalness:.55,roughness:.45,side:THREE.DoubleSide}));
+    rm.castShadow=true;rm.receiveShadow=true;world.add(rm);
+    const bm=new THREE.Mesh(mkG(bp,bi),new THREE.MeshBasicMaterial({color:0xf3f4f6,side:THREE.DoubleSide,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2}));
+    world.add(bm);
   }
 
-  for(const c of corners){
-    const sg=-c.s;
-    for(let k=c.a;k<=c.b;k+=10){
-      const i=((k%N)+N)%N,p=P[i],r=R[i],off=HALF+2.15;
-      const x=p.x+r.x*sg*off,z=p.z+r.z*sg*off;
-      const rail=new THREE.Mesh(new THREE.BoxGeometry(1.45,.38,.12),metal);
-      rail.position.set(x,.55,z);rail.rotation.y=Math.atan2(r.x,r.z);rail.castShadow=true;rail.receiveShadow=true;world.add(rail);
-      const post=new THREE.Mesh(postGeo,darkMetal);post.position.set(x,.34,z);post.castShadow=true;world.add(post);
-    }
-  }
   for(const st of straights){
     if(st.b-st.a<70)continue;
     const sg=farSide(((st.a+st.b)>>1)%N)||1;
@@ -855,15 +871,10 @@ function addElevatedSection(){
   const mk=(g,mat,sh)=>{const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.Float32BufferAttribute(g.p,3));if(g.u)geo.setAttribute('uv',new THREE.Float32BufferAttribute(g.u,2));geo.setIndex(g.i);geo.computeVertexNormals();const m=new THREE.Mesh(geo,mat);m.castShadow=m.receiveShadow=!!sh;world.add(m)};
   mk(body,new THREE.MeshStandardMaterial({color:0x5b5f66,roughness:.92,side:THREE.DoubleSide,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2}),true);
   const rm=MAT.road.clone();rm.side=THREE.DoubleSide;rm.polygonOffset=true;rm.polygonOffsetFactor=-4;rm.polygonOffsetUnits=-4;mk(road,rm,false);
-  // Yellow edge stripes and short black safety railings; each piece gets its own, nothing bridges the gap.
-  const dm=new THREE.MeshStandardMaterial({color:0x111318,metalness:.72,roughness:.38}),ym=new THREE.MeshBasicMaterial({color:0xfacc15});
+  // Yellow edge line; the continuous guardrail already runs along both sides.
+  const ym=new THREE.MeshBasicMaterial({color:0xfacc15});
   for(const side of[-1,1])for(const arr of samp){
-    const pts=[];let prev=null;
-    arr.forEach((s,j)=>{at(s);const h=routeHeight(s),x=Q.x+Q.rx*side*(HALF+.12),z=Q.z+Q.rz*side*(HALF+.12);
-      pts.push(new THREE.Vector3(x,.22+h,z));
-      if(j%9===0||j===arr.length-1){const post=new THREE.Mesh(new THREE.BoxGeometry(.14,.72,.14),dm);post.position.set(x,.5+h,z);world.add(post);
-        if(prev){const dx=x-prev.x,dz=z-prev.z,len=Math.hypot(dx,dz);const bar=new THREE.Mesh(new THREE.BoxGeometry(.14,.16,len+.08),dm);bar.position.set((x+prev.x)/2,.76+(h+prev.h)/2,(z+prev.z)/2);bar.rotation.y=Math.atan2(dx,dz);world.add(bar)}
-        prev={x:x,z:z,h:h}}});
+    const pts=arr.map(sv=>{at(sv);const h=routeHeight(sv);return new THREE.Vector3(Q.x+Q.rx*side*(HALF+.12),.22+h,Q.z+Q.rz*side*(HALF+.12))});
     world.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts),arr.length,.10,6,false),ym));
   }
   // Coin arcs guide the player up the launch ramp, across the jump and onto the raised landing.
@@ -1622,9 +1633,10 @@ function mpTick(dt){
 
 /* ================= STATE ================= */
 let CFG=TR[0],TI=-1;
+let duelOn=false,preDuelMode=null,jaden=null,lastCoins=0,finNewBest=false;
 let raceMode='classic',modeClock=0,eliminationCount=0,driftScore=0,chaosClock=0,chaosLabel='';
 let state='menu',paused=false,time=0,raceT=0,lapStart=0,lapIdx=-1,best=null,rank=12,prevRank=12,cd=0,cdPrev=0,finT=0,finRank=0,finTime=0,finShown=false;
-let boostAmt=1,boosting=false,boostWasHeld=false,abilityT=0,abilityCooldown=0,brakeOn=false,offroad=false,shake=0,msgT=0,wearL=0,wearR=0,thrNow=0,camYaw=0,lastA=0,lbT=0,muted=false;
+let boostAmt=1,boosting=false,boostWasHeld=false,boostLock=false,abilityT=0,abilityCooldown=0,brakeOn=false,offroad=false,shake=0,msgT=0,wearL=0,wearR=0,thrNow=0,camYaw=0,lastA=0,lbT=0,muted=false;
 let drifting=false,driftDir=1,driftT=0,csT=0,kickT=0,wornWarned=false;
 const keys={};let tL=0,tR=0,tA=0,tB=0,tDb=0;
 const GRIP=32;
@@ -1669,8 +1681,20 @@ function resetRace(){
     if(selectedCar==='c3'&&TI===3&&!c.isP)c.skill*=1.055;
     if(selectedCar==='c3'&&TI===4&&!c.isP)c.skill*=1.075;
   }
-  raceT=0;modeClock=0;eliminationCount=0;driftScore=0;chaosClock=12;chaosLabel='';lapStart=0;lapIdx=-1;best=bestLapForTrack(TI);rank=prevRank=PS+1;cd=cdPrev=0;finShown=false;boostAmt=1;boostWasHeld=false;wearL=wearR=0;shake=0;camYaw=NaN;
+  raceT=0;modeClock=0;eliminationCount=0;driftScore=0;chaosClock=12;chaosLabel='';lapStart=0;lapIdx=-1;best=bestLapForTrack(TI);rank=prevRank=PS+1;cd=cdPrev=0;finShown=false;boostAmt=1;boostWasHeld=false;boostLock=false;wearL=wearR=0;shake=0;camYaw=NaN;
   drifting=false;driftT=0;csT=0;abilityT=0;abilityCooldown=0;kickT=0;thrNow=0;boosting=false;brakeOn=false;wornWarned=false;paused=false;lastA=0;placePickups();clearSkids();tutReset();
+  for(const c of cars){if(!c.origName)c.origName=c.name;c.name=c.origName;c.vcap=0}
+  jaden=null;
+  if(duelOn){
+    // 1v1: every other AI is removed. Jimothy Donaldson is built from the player's own car: a little faster, a little quicker off the line.
+    jaden=cars.find(c=>c!==pl&&!c.isRemote);
+    for(const c of cars)if(c!==pl&&c!==jaden)c.eliminated=true;
+    const cs=carInfo(selectedCar);
+    jaden.name='JIMOTHY DONALDSON';jaden.skill=1.03;jaden.vcap=cs.max/3.6*1.048;jaden.accK=cs.acc*1.1;jaden.jb=1;jaden.jbOn=false;
+    jaden.slot=0;pl.slot=1;
+    for(const c of[jaden,pl]){c.dist=S0-12;c.d=c===jaden?-3.2:3.2;c.lane=c.d;c.tl=c.d}
+    rank=prevRank=2;
+  }
   setLights(0);
 }
 
@@ -1752,6 +1776,14 @@ $('mcPause').addEventListener('pointerdown',e=>{e.preventDefault();if(state==='r
 /* ================= HUD ================= */
 const fmt=t=>t==null?'-:--.---':Math.floor(t/60)+':'+(t%60).toFixed(3).padStart(6,'0');
 const ord=n=>n+(['th','st','nd','rd'][(n%100>10&&n%100<14)?0:(n%10<4?n%10:0)]);
+// A car only counts if it is actually in this race: not an AI removed for a 1v1 or time trial,
+// and not an empty multiplayer slot ("WAITING").
+function isActive(c){
+  if(c===pl)return true;
+  if(c.eliminated)return false;
+  if(c.isRemote)return c.name!=='WAITING'&&c.dist>-500;
+  return raceMode!=='time';
+}
 const board=$('board'),rows=[];
 for(let i=0;i<8;i++){const r=document.createElement('div');r.className='row';r.innerHTML='<i></i><b></b><em></em>';board.appendChild(r);rows.push(r)}
 const spd=$('speedo'),sx=spd.getContext('2d');
@@ -1771,13 +1803,13 @@ function drawSpeedo(){
 }
 function say(t,c){const m=$('msg');m.textContent=t;m.style.color=c||'#fff';msgT=1.7;m.style.opacity=1}
 function hudUpdate(dt){
-  $('pn').textContent=rank;
+  $('pn').textContent=rank;{const sp=$('pn').nextElementSibling;if(sp)sp.textContent='/ '+cars.filter(isActive).length}
   $('lap').textContent=Math.round(clamp((pl.dist-S0)/(RACE_DISTANCE-S0),0,1)*100)+'%';
   $('cur').textContent=fmt(raceT);
   $('best').textContent=fmt(raceT);
   const frac=lapIdx<0?0:clamp((pl.dist-S0)/(RACE_DISTANCE-S0),0,1),sec=Math.min(2,Math.floor(frac*3)),sc=$('sect').children;
   for(let k=0;k<3;k++)sc[k].style.background=lapIdx<0?'#444':k<sec?'#22c55e':k===sec?(Math.sin(time*8)>0?'#facc15':'#a3a32a'):'#444';
-  $('bf').style.width=(clamp(boostAmt,0,1)*100)+'%';
+  $('bf').style.width=(clamp(boostAmt,0,1)*100)+'%';$('bf').style.filter=boostLock?'grayscale(.75) brightness(.8)':'';
   $('bl').textContent=(boosting||kickT>0)?'BOOST!':'BOOST [SPACE]';
   const df=$('df');
   df.style.width=(drifting?clamp(driftT/3,0,1)*100:0)+'%';
@@ -1789,16 +1821,18 @@ function hudUpdate(dt){
   lbT-=dt;
   if(lbT<=0){
     lbT=.12;
-    const all=cars.slice().sort((a,b)=>b.dist-a.dist),idx=all.indexOf(pl),st=Math.max(0,Math.min(idx-3,all.length-8));
+    const all=cars.filter(isActive).sort((a,b)=>b.dist-a.dist),idx=all.indexOf(pl),st=Math.max(0,Math.min(idx-3,all.length-8));
     for(let i=0;i<8;i++){
-      const c=all[st+i],r=rows[i],me=c===pl;
+      const c=all[st+i],r=rows[i];
+      if(!c){r.style.display='none';continue}
+      r.style.display='';const me=c===pl;
       r.className='row'+(me?' me':'');r.children[0].style.background=c.col;r.children[1].textContent=c.name;
       if(me)r.children[2].textContent='--.---';
       else{const g=(c.dist-pl.dist)/Math.max(pl.v,30);r.children[2].textContent=(g>0?'-':'+')+Math.min(99.999,Math.abs(g)).toFixed(3)}
     }
   }
   mx.clearRect(0,0,mini.width,mini.height);mx.drawImage(miniBase,0,0);
-  for(const c of cars){if(c===pl)continue;mx.fillStyle=c.col;mx.beginPath();mx.arc(mpx(c.x),mpz(c.z),4,0,TAU);mx.fill()}
+  for(const c of cars){if(c===pl||!isActive(c))continue;mx.fillStyle=c.col;mx.beginPath();mx.arc(mpx(c.x),mpz(c.z),4,0,TAU);mx.fill()}
   mx.fillStyle='#fff';mx.beginPath();mx.arc(mpx(pl.x),mpz(pl.z),8,0,TAU);mx.fill();mx.fillStyle='#e8202a';mx.beginPath();mx.arc(mpx(pl.x),mpz(pl.z),5,0,TAU);mx.fill();
   drawSpeedo();
   if(msgT>0){msgT-=dt;$('msg').style.opacity=clamp(msgT*2,0,1)}
@@ -1833,7 +1867,11 @@ function stepPlayer(dt,racing){
   }else{brk=c.v>45?.3:0;st=clamp(-c.d*.15,-1,1)}
   thrNow=thr;
   const boostHeld=!!(keys.Space||tB);
-  boosting=!!(racing&&boostHeld&&boostAmt>.02&&thr);
+  // Boost can only be started with a completely full meter. Once it runs out (or you let go of it) it is locked
+  // until the meter is full again AND the button has been released, so there are no short bursts while recharging.
+  if(boostLock&&boostAmt>=.999&&!boostHeld)boostLock=false;
+  boosting=!!(racing&&boostHeld&&boostAmt>.02&&thr&&!boostLock);
+  if(boostWasHeld&&!boosting&&(!boostHeld||boostAmt<=.02))boostLock=true;
   if(boosting&&!boostWasHeld)c.v+=12;
   boostWasHeld=boosting;
   brakeOn=!!brk;
@@ -1881,16 +1919,19 @@ function stepPlayer(dt,racing){
   c.phi+=(stE*om-c.v*k-c.phi*3)*dt;c.phi=clamp(c.phi,-.7,.7);
   c.d+=c.v*Math.sin(c.phi)*dt;c.dist=Math.min(L-4,c.dist+c.v*Math.cos(c.phi)*dt);
 
-  const lim=HALF+0.65;
+  // Rail collision uses the car's real footprint: no part of the body may pass the inner face of the guardrail.
+  const RAIL_IN=HALF+KERB+.3-.08,ang=Math.abs(c.phi+c.slip),ext=1.05*Math.cos(ang)+2.4*Math.sin(ang),lim=RAIL_IN-ext;
   if(Math.abs(c.d)>lim){
-    const s=Math.sign(c.d);c.d=s*lim;
-    if(c.v>8){emitSparks(c,5);shake=Math.max(shake,.4)}
-    if(drifting)endDrift(false);
-    c.v*=Math.max(0,1-4*dt);
-    if(s*c.phi>0)c.phi=c.phi*.2-s*.05;
-    // Tyre wear from hitting the outside barrier only counts because the car
-    // has left the track surface.
-    if(offroad){wearL+=dt*6;wearR+=dt*6;}
+    const s=Math.sign(c.d),into=s*c.phi>0;
+    c.d=s*lim;
+    if(into){
+      // Scrape along the rail: the nose swings round until the car runs parallel to it, losing speed with the impact angle.
+      const imp=Math.abs(Math.sin(c.phi));
+      if(c.v>8&&Math.random()<.5){emitSparks(c,2);shake=Math.max(shake,.12+.5*imp)}
+      c.v*=Math.max(0,1-(1.1+7*imp)*dt);
+      c.phi-=c.phi*Math.min(1,dt*9);
+      if(drifting)endDrift(false);
+    }else c.v*=Math.max(0,1-.5*dt);
   }
   if(Math.abs(c.d)>HALF-.8&&Math.abs(c.d)<HALF+KERB)shake=Math.max(shake,.1*c.v/90);
   if(offroad)shake=Math.max(shake,.12*c.v/90);
@@ -1927,23 +1968,30 @@ function stepPlayer(dt,racing){
 function stepAI(c,dt){
   if(c.eliminated)return;
   at(c.dist);
+  const J=c===jaden&&duelOn;
   let rb=1;const gap=pl.dist-c.dist;
-  if(gap>120)rb+=clamp((gap-120)/3000,0,.05)*CFG.rubber;
-  let vt=Math.min(VL[Q.i],90)*c.skill*rb,bl=null,bd=1e9;
-  if(CFG.mist&&c.slowT<=0&&state==='race'&&Math.random()<CFG.mist*dt)c.slowT=rnd(.9,1.8);
+  if(J)rb+=clamp((gap-20)/400,0,.08);   // Jimothy Donaldson catches up when you pull ahead, but never slows down when he leads
+  else if(gap>120)rb+=clamp((gap-120)/3000,0,.05)*CFG.rubber;
+  let vt=(J?Math.min(VL[Q.i]*c.skill,c.vcap)*rb:Math.min(VL[Q.i],90)*c.skill*rb),bl=null,bd=1e9;
+  if(J){
+    const straight=VL[Q.i]*c.skill>c.vcap*.98;
+    if(straight&&c.jb>.1&&c.v>30&&state==='race'){c.jbOn=true;c.jb=Math.max(0,c.jb-dt*.19);vt+=20}
+    else{c.jbOn=false;c.jb=Math.min(1,c.jb+dt*.09)}
+  }
+  if(!J&&CFG.mist&&c.slowT<=0&&state==='race'&&Math.random()<CFG.mist*dt)c.slowT=rnd(.9,1.8);
   if(c.slowT>0){c.slowT-=dt;vt*=.8}
   const lim=HALF-1.4;
   for(const o of cars){if(o===c||(o.isRemote&&mpRole))continue;const dd=wrapd(o.dist-c.dist);if(dd>0&&dd<24&&Math.abs(o.d-c.d)<2.6&&dd<bd){bd=dd;bl=o}}
   if(bl){vt=Math.min(vt,bl.v*.985+(bd-10)*.35);const dir=c.d>=bl.d?1:-1;c.tl=clamp(bl.d+dir*3.4,-lim,lim)}
   else{
     c.tl+=(c.lane-c.tl)*Math.min(1,dt*.6);
-    const bR=[0,16,24,32][CFG.block],bK=[0,.9,1.6,2.4][CFG.block];
+    const bLv=J?2:CFG.block,bR=[0,16,24,32][bLv],bK=[0,.9,1.6,2.4][bLv];
     if(bR&&state==='race'&&c.v>40){
       const g=wrapd(c.dist-pl.dist);
       if(g>0&&g<bR)c.tl+=(clamp(pl.d,-lim,lim)-c.tl)*Math.min(1,dt*bK);
     }
   }
-  const acc=11*(1-Math.pow(c.v/95,1.6));
+  const acc=J?13*c.accK*(c.jbOn?1.7:1)*(1-Math.pow(c.v/(c.vcap+(c.jbOn?20:0)),1.6)):11*(1-Math.pow(c.v/95,1.6));
   c.v+=clamp(vt-c.v,-52*dt,Math.max(0,acc)*dt);
   c.d+=clamp(c.tl-c.d,-3.2*dt,3.2*dt);
   c.phi=clamp((c.tl-c.d)*.06,-.12,.12);
@@ -1996,8 +2044,10 @@ function step(dt){
       lapIdx=ln;
       if(ln>=LAPS){say('FINISH LINE!','#fde047');
         state='finish';finT=0;finRank=rank;finTime=raceT;
-        const beaten=raceMode==='time'?1:Math.max(0,GRIDN-rank);const payout=[1,5,8,12,15,20][TI]||1;const earned=beaten*payout;coins+=earned;saveGarage();
-        if(tutStage!=='race'){const xb=[30,60,100,150,220,300][TI]||30,xf=raceMode==='time'?.6:.35+.65*Math.max(0,GRIDN-rank)/(GRIDN-1);lastXp=Math.round(xb*xf);xpGain(lastXp);updateCoins()}else lastXp=0;
+        const beaten=raceMode==='time'?1:Math.max(0,GRIDN-rank);const payout=[1,5,8,12,15,20][TI]||1;finNewBest=false;
+        if(tutStage!=='race'){const ob=bestLapForTrack(TI);if(!ob||raceT<ob){trackBestLaps[TI]=raceT;saveBestLaps();finNewBest=true}}
+        const earned=duelOn?(rank===1?60:0):beaten*payout;lastCoins=earned;coins+=earned;saveGarage();
+        if(tutStage!=='race'){const xb=[30,60,100,150,220,300][TI]||30,xf=raceMode==='time'?.6:.35+.65*Math.max(0,GRIDN-rank)/(GRIDN-1);lastXp=duelOn?(rank===1?250:25):Math.round(xb*xf);xpGain(lastXp);updateCoins()}else lastXp=0;
         endDrift(false);beep(660,.2,.08);setTimeout(()=>beep(880,.4,.08),220);
       }
     }
@@ -2026,7 +2076,7 @@ function sync(dt){
     else m.brake.emissiveIntensity=.6;
   }
 }
-let camY=NaN,camLY=NaN;
+let camY=NaN,camLY=NaN,camLift=0;
 function updateCamera(dt){
   let a=pl.yaw;
   if(state==='menu'){
@@ -2034,7 +2084,7 @@ function updateCamera(dt){
     camera.position.set(pl.x+Math.sin(ang)*r,2.4,pl.z+Math.cos(ang)*r);
     camera.fov=48;camera.updateProjectionMatrix();camera.lookAt(pl.x,.7,pl.z);camYaw=NaN;return;
   }
-  if(Number.isNaN(camYaw)){camYaw=a;camY=NaN;camLY=NaN}
+  if(Number.isNaN(camYaw)){camYaw=a;camY=NaN;camLY=NaN;camLift=0}
   let df=a-camYaw;while(df>Math.PI)df-=TAU;while(df<-Math.PI)df+=TAU;
   camYaw+=df*(1-Math.exp(-5*dt));if(camMode===2||camMode===3)camYaw=a;
   const fx=Math.sin(camYaw),fz=Math.cos(camYaw),sp=pl.v/92;
@@ -2044,7 +2094,9 @@ function updateCamera(dt){
   const tgtY=py*.6+routeHeight(pd-back*.9)*.4,tgtL=py*.45+routeHeight(pd+CM.la*.8)*.55;
   if(Number.isNaN(camY)){camY=tgtY;camLY=tgtL}
   camY+=(tgtY-camY)*(1-Math.exp(-4.5*dt));camLY+=(tgtL-camLY)*(1-Math.exp(-6*dt));
-  const camH=Math.max(h+camY,routeHeight(pd-back)+1.2);
+  const js=jumpSection(),inJ=pd>js.start+js.ramp*.55&&pd<js.start+js.ramp+js.lip+js.gap+js.land+10;
+  camLift+=((inJ?3:0)*Math.min(1,back/5)-camLift)*(1-Math.exp(-3.2*dt));
+  const camH=Math.max(h+camY,routeHeight(pd-back)+1.2)+camLift;
   camera.position.set(pl.x-fx*back+(Math.random()-.5)*sh,camH+(Math.random()-.5)*sh,pl.z-fz*back+(Math.random()-.5)*sh);
   const fov=CM.f+sp*13+((boosting||kickT>0)?6:0)+(drifting?2:0);
   if(Math.abs(camera.fov-fov)>.05){camera.fov+=(fov-camera.fov)*Math.min(1,dt*5);camera.updateProjectionMatrix()}
@@ -2130,31 +2182,58 @@ $('modeButtons').querySelectorAll('button').forEach(b=>b.addEventListener('click
       '<div class="st"><span>Corners</span><b>'+td.turns+'</b></div>'+
       '<div class="st"><span>Race distance</span><b>'+((td.L-430)/1000).toFixed(2)+' km</b></div>'+
       '<div class="st"><span>Rivals</span><b style="color:'+t.col+'">'+'&#9733;'.repeat(t.stars)+'<span style="color:#444">'+'&#9733;'.repeat(5-t.stars)+'</span></b></div>'+
+      '<div class="st"><span>Your best</span><b class="bestv">--:--.---</b></div>'+
       '<div class="st"><span>Start</span><b>P'+(t.slot+1)+' / 20</b></div>';
     thumb(d.querySelector('canvas'),td,t.col);
     d.onclick=()=>{audioInit();if(ac&&ac.state==='suspended')ac.resume();$('levelSelect').classList.add('hide');menu.classList.add('hide');begin(i)};
     box.appendChild(d);
   });
 })();
+function refreshBests(){document.querySelectorAll('#cards .card').forEach((d,i)=>{const b=bestLapForTrack(i),e=d.querySelector('.bestv');if(e){e.textContent=b?fmt(b):'--:--.---';e.style.color=b?'#c084fc':''}})}
+refreshBests();
 updateCoins();drawWheel();applyWheel();
 function showEnd(){if(tutStage==='race'){tutFinish();return}
-  finShown=true;end.classList.remove('hide');showLevelPops();if(finRank<=3||raceMode==='time'){partyBurst(finRank===1?260:150);cheer(2.2)}
+  finShown=true;end.classList.remove('hide');showLevelPops();if(duelOn?finRank===1:(finRank<=3||raceMode==='time')){partyBurst(finRank===1?260:150);cheer(2.2)}
   const r=finRank;
-  $('eT').innerHTML=raceMode==='time'?'TIME TRIAL <b>COMPLETE!</b>':r===1?'YOU <b>WIN!</b>':r<=3?'PODIUM! <b>'+ord(r)+'</b>':'FINISHED <b>'+ord(r)+'</b>';
-  $('eS').innerHTML=CFG.tag+' &bull; '+CFG.name+'<br>Mode: '+({classic:'Classic',time:'Time Trial',elimination:'Elimination',drift:'Drift Attack',chaos:'Chaos Party'}[raceMode])+'<br>Race distance: '+((RACE_DISTANCE-S0)/1000).toFixed(2)+' km<br>Race time: '+fmt(finTime)+(raceMode==='drift'?'<br>Drift score: '+Math.floor(driftScore).toLocaleString():'')+'<br><b style="color:#ffd34d">+ '+((GRIDN-finRank)*([1,5,8,12,15,20][TI]||1))+' coins</b> &nbsp; • &nbsp; <b style="color:#ffd34d">Total: '+coins+'</b>'+(lastXp>0?'<br><b style="color:#38bdf8">+ '+lastXp+' XP</b> &nbsp; • &nbsp; <b style="color:#38bdf8">Level '+lvlInfo(xp).l+'</b>':'')+'<br>'+
-    (r===1?(TI<TR.length-1?'Champion! Ready for a harder track?':'You conquered the hardest track. Legend!'):r<=3?'Awesome driving!':'Good fight! Drift through corners for turbo boosts and watch your tyre wear.');
-  $('next').style.display=(r<=3&&TI<TR.length-1)?'inline-block':'none';
+  $('eT').innerHTML=duelOn?(r===1?'YOU BEAT <b>JIMOTHY DONALDSON!</b>':'<b>JIMOTHY DONALDSON</b> WINS!'):raceMode==='time'?'TIME TRIAL <b>COMPLETE!</b>':r===1?'YOU <b>WIN!</b>':r<=3?'PODIUM! <b>'+ord(r)+'</b>':'FINISHED <b>'+ord(r)+'</b>';
+  $('eS').innerHTML=CFG.tag+' &bull; '+CFG.name+'<br>Best time here: <b>'+fmt(bestLapForTrack(TI)||finTime)+'</b>'+(finNewBest?' &nbsp;<b style="color:#4ade80">NEW BEST!</b>':'')+'<br>Mode: '+(duelOn?'Try If You Dare (1v1 vs Jimothy Donaldson)':({classic:'Classic',time:'Time Trial',elimination:'Elimination',drift:'Drift Attack',chaos:'Chaos Party'}[raceMode]))+'<br>Race distance: '+((RACE_DISTANCE-S0)/1000).toFixed(2)+' km<br>Race time: '+fmt(finTime)+(raceMode==='drift'?'<br>Drift score: '+Math.floor(driftScore).toLocaleString():'')+'<br><b style="color:#ffd34d">+ '+lastCoins+' coins</b> &nbsp; • &nbsp; <b style="color:#ffd34d">Total: '+coins+'</b>'+(lastXp>0?'<br><b style="color:#38bdf8">+ '+lastXp+' XP</b> &nbsp; • &nbsp; <b style="color:#38bdf8">Level '+lvlInfo(xp).l+'</b>':'')+'<br>'+
+    (duelOn?(r===1?'You beat Jimothy Donaldson! Think you can do it again?':'Jimothy Donaldson was faster this time. Want a rematch?'):r===1?(TI<TR.length-1?'Champion! Ready for a harder track?':'You conquered the hardest track. Legend!'):r<=3?'Awesome driving!':'Good fight! Drift through corners for turbo boosts and watch your tyre wear.');
+  $('next').style.display=(!duelOn&&r<=3&&TI<TR.length-1)?'inline-block':'none';
 }
-function begin(i){
+function begin(i,duel=false){
+  duelOn=!!duel;
+  if(duelOn){if(preDuelMode===null)preDuelMode=raceMode;raceMode='classic'}
+  else if(preDuelMode!==null){if(raceMode==='classic')raceMode=preDuelMode;preDuelMode=null}
   if(document.activeElement&&document.activeElement.blur)document.activeElement.blur();
   $('raceBackdrop').style.display='none';
   if(mpRole==='host'&&mpConnections.some(x=>x.conn&&x.conn.open))mpSend({type:'start',track:i,mode:raceMode});
   if(i!==TI)loadTrack(i);
   resetRace();state='countdown';hud.classList.remove('hide');updateCoins();
   for(const c of cars)pose(c);beep(300,.1);
+  // Pre-compile shaders and upload textures/geometry now, before the first race frame, so there is no black flash at the start.
+  try{updateCamera(.016);sync(.016);cullWorld();renderer.compile(scene,camera);renderer.render(scene,camera)}catch(e){}
 }
-$('playBtn').onclick=()=>{$('levelSelect').classList.remove('hide');menu.classList.add('hide')};
+$('playBtn').onclick=()=>{refreshBests();$('levelSelect').classList.remove('hide');menu.classList.add('hide')};
 $('backToMenu').onclick=()=>{$('levelSelect').classList.add('hide');menu.classList.remove('hide')};
+$('jadenBtn').onclick=()=>{
+  if(tutStage&&tutStage!=='done')return;
+  if(mpRole){$('tip').textContent='Leave the multiplayer room first to challenge Jimothy Donaldson.';return}
+  audioInit();if(ac&&ac.state==='suspended')ac.resume();
+  menu.classList.add('hide');begin(3,true);
+};
+function leaveRace(to){
+  if(document.activeElement&&document.activeElement.blur)document.activeElement.blur();
+  paused=false;end.classList.add('hide');hud.classList.add('hide');$('pause').style.display='none';
+  resetRace();for(const c of cars)pose(c);state='menu';$('raceBackdrop').style.display='block';
+  refreshBests();
+  if(to==='tracks')$('levelSelect').classList.remove('hide');
+  else if(to==='shop'){$('shop').classList.remove('hide');showShopView('list')}
+  else menu.classList.remove('hide');
+}
+$('pResume').onclick=()=>{if(document.activeElement&&document.activeElement.blur)document.activeElement.blur();paused=false};
+$('pShop').onclick=()=>leaveRace('shop');
+$('pTracks').onclick=()=>leaveRace('tracks');
+$('pMenu').onclick=()=>leaveRace('menu');
 $('friendBtn').onclick=()=>{$('friendPanel').classList.remove('hide');$('menu').classList.add('hide')};
 $('closeFriend').onclick=()=>{$('friendPanel').classList.add('hide');$('menu').classList.remove('hide')};
 $('hostRace').onclick=mpCreateRoom;
@@ -2186,9 +2265,9 @@ $('closeGarage').onclick=()=>{
   updateCoins();
 };
 $('drawCar').onclick=drawCar;
-$('again').onclick=()=>{end.classList.add('hide');begin(TI)};
+$('again').onclick=()=>{end.classList.add('hide');begin(TI,duelOn)};
 $('next').onclick=()=>{end.classList.add('hide');begin(Math.min(TI+1,TR.length-1))};
-$('toMenu').onclick=()=>{end.classList.add('hide');hud.classList.add('hide');resetRace();for(const c of cars)pose(c);state='menu';$('raceBackdrop').style.display='block';$('levelSelect').classList.remove('hide')};
+$('toMenu').onclick=()=>{refreshBests();end.classList.add('hide');hud.classList.add('hide');resetRace();for(const c of cars)pose(c);state='menu';$('raceBackdrop').style.display='block';$('levelSelect').classList.remove('hide')};
 const resizeGame=()=>{renderer.setSize(innerWidth,innerHeight);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix()};
 addEventListener('resize',resizeGame);addEventListener('orientationchange',()=>setTimeout(resizeGame,120));
 
@@ -2387,12 +2466,14 @@ function frame(now){
   sun.target.position.set(pl.x,0,pl.z);sun.position.set(pl.x+SUNV.x*250,SUNV.y*250,pl.z+SUNV.z*250);
   const K=renderer.domElement.height/(2*Math.tan(camera.fov*Math.PI/360));
   if(!paused){smoke.update(dt,K);sparks.update(dt,K)}
+  if(qPending){qPending=false;applyQuality()}   // resize and render in the same frame: no blank canvas
   if((++cullTick%6)===0)cullWorld();
+  renderer.shadowMap.autoUpdate=shadowEvery===1||(cullTick%shadowEvery)===0;   // slow machines refresh shadows every other frame
   renderer.render(scene,camera);
   // Auto quality: if the game runs slowly, lower the resolution, then shadows and view distance (never raised again).
-  if(state!=='menu'&&!paused&&!document.hidden){
+  if(state==='race'&&raceT>3&&!paused&&!document.hidden){
     if(qCool>0)qCool-=dt;
-    else{qT+=dt;qN++;if(qT>=2){if(qT/qN>.027&&qLevel<2){qLevel++;applyQuality();qCool=3}qT=0;qN=0}}
+    else{qT+=dt;qN++;if(qT>=2){if(qT/qN>.027&&qLevel<2){qLevel++;qPending=true;qCool=3}qT=0;qN=0}}
   }else{qCool=Math.max(qCool,2);qT=0;qN=0}
   $('pause').style.display=(paused&&state!=='menu'&&!tutWait)?'flex':'none';
   if(state!=='menu')hudUpdate(dt);
