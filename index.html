@@ -292,7 +292,7 @@ button:disabled{opacity:.4;cursor:default}button:disabled:active{transform:none}
 .crow{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
 button.sw{width:30px;height:30px;padding:0;border-radius:8px;border:2px solid #475569;box-shadow:none}
 button.sw.on{border-color:#fff;box-shadow:0 0 10px #67e8f9}
-.menuButtonPanel #studioBtn{background:linear-gradient(135deg,#a855f7,#ec4899)!important;box-shadow:0 5px 0 #6b21a8!important;font-size:clamp(13px,1.9vw,16px);padding:12px 10px}
+.menuButtonPanel #studioBtn{background:linear-gradient(135deg,#1d4ed8,#38bdf8)!important;box-shadow:0 5px 0 #1e3a8a!important;text-shadow:0 2px 4px rgba(0,30,90,.6);font-size:clamp(13px,1.9vw,16px);padding:12px 10px}
 @media(max-width:760px){#custom{flex-direction:column;padding:8px}#custStage{flex:none;height:40vh}#custPanel{flex:1;max-width:none;min-width:0}}
 #custPanel{background:linear-gradient(160deg,#1e3a8a 0%,#2563eb 45%,#38bdf8 100%);border-color:#bae6fd}
 #custPanel h2{color:#fff;text-shadow:0 2px 10px rgba(0,30,90,.6)}
@@ -385,7 +385,7 @@ button.sw.on{border-color:#fff;box-shadow:0 0 10px #67e8f9}
   <div class="toolbox">
     <h2>⚙ ADMIN PANEL</h2>
     <div class="sub">Enter a code to redeem it.</div>
-    <div class="toolrow"><input id="adminCode" type="text" placeholder="ENTER CODE" autocomplete="off" autocapitalize="off" spellcheck="false"><button id="redeemCode" class="g">REDEEM</button></div>
+    <div class="toolrow"><input id="adminCode" type="password" placeholder="ENTER CODE" autocomplete="new-password" data-lpignore="true" autocapitalize="off" spellcheck="false"><button id="redeemCode" class="g">REDEEM</button></div>
     <div id="adminStatus" class="toolstatus"></div>
     <div class="btns"><button id="closeAdmin" class="b">CLOSE</button></div>
   </div>
@@ -1529,17 +1529,18 @@ const CAR_LIST=[
  {id:'m10',tier:'mythic',name:'Omega GP',max:539,acc:1.37,ability:'GRIP MASTER'}
 ];
 const SPECIAL_CAR={id:'special1',tier:'special',name:'TRI-FUSION',max:500,acc:1.30};
-const SPECIAL_CAR_2={id:'special2',tier:'special',name:'SOLAR INFERNO',max:600,acc:1.34};
+const SPECIAL_CAR_2={id:'special2',tier:'special',name:'SOLAR INFERNO',max:600,acc:1.34,ability:'SOLAR FLARE'};
 const ABILITIES={
  'GRIP MASTER':{duration:4.0,cooldown:11,speed:0,acc:1.05,grip:1.8,message:'GRIP MASTER!'},
  'AERO SURGE':{duration:3.5,cooldown:11,speed:18,acc:1.45,grip:1,message:'AERO SURGE!'},
  'NITRO OVERDRIVE':{duration:2.8,cooldown:12,speed:35,acc:1.25,grip:1,message:'NITRO OVERDRIVE!'},
  'TIME SHIFT':{duration:3.0,cooldown:13,speed:12,acc:1.15,grip:1.15,message:'TIME SHIFT!'},
- 'OVERDRIVE X':{duration:2.2,cooldown:14,speed:50,acc:1.35,grip:1.05,message:'OVERDRIVE X!'}
+ 'OVERDRIVE X':{duration:2.2,cooldown:14,speed:50,acc:1.35,grip:1.05,message:'OVERDRIVE X!'},
+ 'SOLAR FLARE':{duration:4.0,cooldown:12,speed:60,acc:1.5,grip:1.3,message:'SOLAR FLARE!'}
 };
 const CAR_BY_ID=Object.fromEntries([...CAR_LIST,SPECIAL_CAR,SPECIAL_CAR_2].map(c=>[c.id,c]));
 function carInfo(id){return CAR_BY_ID[id]||CAR_BY_ID.c3}
-function hasAbility(c){return !!c&&(c.tier==='legendary'||c.tier==='mythic')}
+function hasAbility(c){return !!c&&(c.tier==='legendary'||c.tier==='mythic'||c.id==='special2')}
 const RARITY_ODDS={common:.30,uncommon:.25,rare:.20,epic:.12,legendary:.09,mythic:.04};
 const RARITY_ORDER=['common','uncommon','rare','epic','legendary','mythic'];
 let wheelAngle=0,spinBusy=false;
@@ -1625,21 +1626,22 @@ $('spinBack').onclick=()=>{if(!spinBusy)showShopView('list')};
 /* ================= ADMIN CODES =================
    Add your own codes here (type the code in lowercase).
    coins:N  -> gives N coins          car:'id' -> unlocks and selects that car (ids are in CAR_LIST)
-   once:true -> can only be redeemed one time per browser */
+   every code is single-use per browser by default (set once:false on a code to allow repeats) */
 const ADMIN_CODES={
  'f1ofthesun':{car:'special2',msg:'SOLAR INFERNO unlocked!'},
- 'givemesomemoney':{coins:5000,msg:'+5000 coins!'}
+ 'givemesomemoney':{coins:5000,msg:'+5000 coins!'},
+ 'plsgiveme10k':{coins:10000,msg:'+10000 coins!'}
 };
 function redeemCode(){
   const st=$('adminStatus'),raw=$('adminCode').value.trim().toLowerCase();
   const bad=m=>{st.style.color='#fca5a5';st.textContent=m},ok=m=>{st.style.color='#a7f3d0';st.textContent=m};
   if(!raw){bad('Type a code first.');return}
   if(!Object.prototype.hasOwnProperty.call(ADMIN_CODES,raw)){bad('That code is not valid.');return}
-  const c=ADMIN_CODES[raw];let used=[];try{used=JSON.parse(localStorage.getItem('turboGP_codesUsed')||'[]')}catch(e){}
-  if(c.once&&used.includes(raw)){bad('That code has already been used.');return}
+  const c=ADMIN_CODES[raw],once=c.once!==false;let used=[];try{used=JSON.parse(localStorage.getItem('turboGP_codesUsed')||'[]')}catch(e){}
+  if(once&&used.includes(raw)){bad('That code has already been used.');return}
   if(c.car){if(!CAR_BY_ID[c.car]){bad('That code is broken.');return}if(garage.includes(c.car)&&!c.coins){bad('You already own that car.');return}if(!garage.includes(c.car))garage.push(c.car);selectedCar=c.car}
   if(c.coins)coins+=c.coins;
-  if(c.once){used.push(raw);localStorage.setItem('turboGP_codesUsed',JSON.stringify(used))}
+  if(once){used.push(raw);localStorage.setItem('turboGP_codesUsed',JSON.stringify(used))}
   saveGarage();updatePlayerCarAppearance();ok(c.msg||'Code redeemed!');$('adminCode').value='';
 }
 $('redeemCode').onclick=redeemCode;
